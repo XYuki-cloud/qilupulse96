@@ -5,3 +5,7 @@ Copyright 2026 XYuki
 The public source tree is a curated Shandong production subset. See
 THIRD_PARTY_NOTICES.md and docs/PROVENANCE.md before redistributing any
 retained dependency or model artifact.
+
+The files under data/public/ are research-data derivatives and are not covered
+by the Apache-2.0 code license. See docs/PUBLIC_DATA.md for their field,
+provenance, and redistribution boundary.

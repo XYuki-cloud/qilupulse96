@@ -7,8 +7,8 @@ or model artifacts.
 
 ## Repository boundary
 
-- [ ] The final remote operation is explicitly authorized, uses a pinned
-      `--force-with-lease`, and does not overwrite an unexpected remote HEAD.
+- [ ] The final remote operation is explicitly authorized and uses an ordinary
+      push; no force-push is needed for this data-package release.
 - [ ] Public history contains only clean-release commits.
 - [ ] The original private production repository remains unchanged.
 - [ ] `git status --short --branch` is clean.
@@ -30,8 +30,14 @@ or model artifacts.
 - [ ] Secret scan is clean.
 - [ ] Absolute path, username, internal hostname, and private-file-name scans
       are clean.
-- [ ] Real market/weather data, workbooks, reports, ledgers, checkpoints, and
-      generated output are absent.
+- [ ] Original market/weather workbooks, private runtime inputs, reports,
+      ledgers, checkpoints, and generated output are absent; only the four
+      allowlisted field-minimized research workbooks are present under
+      `data/public/`.
+- [ ] `data/public/MANIFEST.json` hashes, sheet names, fields, row counts, and
+      coverage match the four committed workbooks.
+- [ ] Public workbook metadata, hidden sheets, formulas, comments, hyperlinks,
+      external links, embedded objects, and private text markers are clean.
 - [ ] Large-file and binary review is clean.
 
 ## Experimental status and result disclosure
@@ -57,6 +63,8 @@ or model artifacts.
 - [ ] `compileall`, import smoke tests, wheel build, and clean wheel install
       succeed.
 - [ ] The production CLI fails clearly when required inputs are missing.
+- [ ] The public workbook importer passes `--check-only` and writes canonical
+      parquet only under the ignored runtime root.
 - [ ] `git diff --check` succeeds.
 
 ## Publication decision

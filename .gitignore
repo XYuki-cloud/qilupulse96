@@ -57,6 +57,11 @@ output/
 *.xlsm
 *.pdf
 
+# Maintainer-reviewed public research package; all other workbooks remain ignored
+!data/public/
+!data/public/*.xlsx
+!data/public/MANIFEST.json
+
 # Local editor and OS files
 .idea/
 .vscode/

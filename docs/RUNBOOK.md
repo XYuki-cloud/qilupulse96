@@ -26,6 +26,36 @@ uv run python scripts/generate_demo_data.py --days 90 --seed 7
 Synthetic data is for adapter and test development. It does not provide an
 authorized model and must not be reported as a market backtest.
 
+## Import the public research workbooks
+
+The repository includes four sanitized, minimal-field research workbooks under
+`data/public/`. They are derived copies rather than the original source
+workbooks. The importer verifies the manifest, workbook metadata, allowlisted
+fields, 96-slot completeness, D+1 disclosure dates, and cross-file overlap
+consistency:
+
+```powershell
+uv run python scripts/ingest_public_shandong_workbooks.py `
+  --input-dir data/public `
+  --runtime-root .private-runtime
+```
+
+To perform the same package check without creating any runtime output:
+
+```powershell
+uv run python scripts/ingest_public_shandong_workbooks.py `
+  --input-dir data/public `
+  --check-only
+```
+
+The command is offline and does not call a weather API, load a model, calibrate
+predictions, or create a report. Its canonical parquet outputs are written to
+the ignored runtime under
+`.private-runtime/data/raw/shandong_all_network/SD/`. The data package is for
+research and parser reproducibility; it is not a production input qualification
+or a live-market data service. See [`PUBLIC_DATA.md`](PUBLIC_DATA.md) for the
+field and redistribution boundary.
+
 ## Prepare a private runtime
 
 Keep authorized inputs and generated output outside the public source state.

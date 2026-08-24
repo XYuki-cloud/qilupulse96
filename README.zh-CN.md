@@ -17,9 +17,10 @@ QiluPulse-96 提供目标日电价预测工作流的源码和命令行接口。�
 授权的市场与天气输入，使用明确的决策时间截止点，加载指定的模型 bundle，
 并生成可供检查的结果元数据。
 
-本仓库是源码预览版本，不包含真实市场数据、生产天气快照、私有凭据或生产
-模型权重。安装成功和合成测试通过，只能说明软件接口可以运行，不能据此推断
-预测准确率或生产部署条件已经具备。
+本仓库是源码预览版本，包含 4 个经过字段最小化和元数据清理的 Excel 研究副本，位于
+[`data/public/`](data/public/)，用于复现解析器和历史研究流程；但不包含原始完整工作簿、
+生产天气快照、私有凭据或生产模型权重。安装成功和测试通过，只能说明软件接口可以运行，
+不能据此推断预测准确率或生产部署条件已经具备。
 
 实际运行时，应将代码目录与被 Git 忽略的本地 runtime 目录分开。runtime 目录
 用于存放操作者有权使用的输入、模型 bundle、缓存、校准账本和生成报告；这些
@@ -36,8 +37,8 @@ QiluPulse-96 提供目标日电价预测工作流的源码和命令行接口。�
 | Python 导入路径 | `da_forecast` |
 | 支持环境 | Python 3.11 或更新版本；锁定开发环境使用 [uv](https://docs.astral.sh/uv/) |
 | 发布状态 | 实验性源码预览；未通过生产使用资格审查 |
-| 本仓库提供 | 源码接口、合成 fixture、测试和文档 |
-| 本仓库不提供 | 真实输入、私有运行状态和生产模型权重 |
+| 本仓库提供 | 源码接口、4 个清理后的研究工作簿、合成 fixture、测试和文档 |
+| 本仓库不提供 | 原始完整工作簿、私有运行状态、天气快照和生产模型权重 |
 
 ## 当前实验性证据
 
@@ -143,9 +144,10 @@ flowchart LR
 
 | 包含 | 默认不包含 |
 | --- | --- |
-| 模型结构和公开 Python 接口 | 真实市场或天气数据 |
+| 模型结构和公开 Python 接口 | 原始完整工作簿以及私有市场/天气输入 |
 | 生产工作流、就绪检查、推理、校准和报告 | 生产天气快照和私有账本 |
 | 公开市场/天气适配器与来源接口 | 生产 checkpoint 或模型权重 |
+| `data/public/` 下的 4 个清理后研究工作簿 | 其他工作簿、原始字段和仅供内部使用的数据 |
 | bundle manifest 和 checksum 校验 | API key、cookie、证书或本地配置 |
 | 合成数据工具和契约测试 | 本地运行、日志、报告和生成结果 |
 | CLI 入口与 CI 边界检查 | 再分发权尚未确认的代码或产物 |
@@ -169,6 +171,36 @@ uv run python scripts/generate_demo_data.py --days 90 --seed 7
 
 生成的文件默认被 Git 忽略。它们只用于验证软件接口，不是市场数据集、生产
 模型，也不能作为真实市场表现的证据。
+
+## 公开研究数据包
+
+仓库内的 `data/public/` 包含 4 个派生工作簿：覆盖 2024 年、2025 年、工作簿行覆盖
+2026-01-01 至 2026-08-15 的 3 个市场数据文件，以及覆盖 2026-08-13 至 2026-08-22 的人工实时电价文件。
+它们只保留公开山东适配器所需字段。原工作簿中的 `实际披露数据` 工作表、原始作者元数据
+和非必要字段均已排除。这些文件用于研究和复现，不是官方数据接口，也不意味着具备生产
+数据资格；准确哈希和结构记录在 [`data/public/MANIFEST.json`](data/public/MANIFEST.json)。
+
+只检查包结构，不写入 runtime：
+
+```powershell
+uv run python scripts/ingest_public_shandong_workbooks.py `
+  --input-dir data/public `
+  --check-only
+```
+
+将其导入被 Git 忽略的本地 runtime，用于解析和历史研究：
+
+```powershell
+uv run python scripts/ingest_public_shandong_workbooks.py `
+  --input-dir data/public `
+  --runtime-root .private-runtime
+```
+
+导入器只会在 `.private-runtime/data/raw/shandong_all_network/SD/` 下写入 canonical
+parquet，不会获取天气、创建模型 bundle 或运行预测。2026 文件中 8 月 14—15 日的实时
+价格、8 月 15 日的日前价格是完整空白占位行；导入器按现有解析契约排除这些空白价格日，
+不会插值或伪造数值。字段、单位、转换规则和再分发限制见
+[`docs/PUBLIC_DATA.md`](docs/PUBLIC_DATA.md)。
 
 ## 准备本地 private runtime
 
@@ -285,6 +317,7 @@ Apache-2.0 仅适用于维护者确认属于原创或已经完成合法再许可
 | --- | --- |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 运行流程、源码布局和契约不变量 |
 | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | 安装、合成数据、bundle 和结果检查命令 |
+| [`docs/PUBLIC_DATA.md`](docs/PUBLIC_DATA.md) | 公开工作簿字段、清理、导入和数据边界 |
 | [`docs/FEATURE_ABLATION.md`](docs/FEATURE_ABLATION.md) | 天气、日历和近期价格状态的离线依赖审计 |
 | [`docs/MODEL_RELEASE.md`](docs/MODEL_RELEASE.md) | 发布模型权重前需要具备的证据 |
 | [`docs/PROVENANCE.md`](docs/PROVENANCE.md) | 代码、数据、依赖和再分发来源记录 |

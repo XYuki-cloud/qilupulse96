@@ -19,10 +19,12 @@ target-day forecasting workflow. The workflow accepts authorized market and
 weather inputs, applies a documented decision-time cutoff, loads an explicit
 model bundle, and writes result metadata for inspection.
 
-This repository is a source preview. It does not contain real market data,
-production weather snapshots, private credentials, or production model
-weights. Installation and synthetic tests demonstrate the software interface;
-they do not establish forecast accuracy or production readiness.
+This repository is a source preview. It contains four sanitized, minimal-field
+Excel derivatives for parser and research reproducibility under
+[`data/public/`](data/public/), but it does not contain the original source
+workbooks, production weather snapshots, private credentials, or production
+model weights. Installation and tests demonstrate software interfaces; they do
+not establish forecast accuracy or production readiness.
 
 For an actual run, keep the checkout (code root) separate from an ignored local
 runtime root. The runtime root contains the operator's authorized inputs, model
@@ -40,8 +42,8 @@ are part of the public source tree.
 | Python import path | `da_forecast` |
 | Supported runtime | Python 3.11 or newer; [uv](https://docs.astral.sh/uv/) is used for the locked development environment |
 | Release status | Experimental source preview; not qualified for production use |
-| Included release material | Source interfaces, synthetic fixtures, tests, and documentation |
-| Excluded release material | Real inputs, private runtime state, and production model weights |
+| Included release material | Source interfaces, four sanitized research workbooks, synthetic fixtures, tests, and documentation |
+| Excluded release material | Original source workbooks, private runtime state, weather snapshots, and production model weights |
 
 ## Current experimental evidence
 
@@ -160,9 +162,10 @@ operator to validate source terms, data quality, and local market rules.
 
 | Included | Not included by default |
 | --- | --- |
-| Model topology and public package interfaces | Real market or weather data |
+| Model topology and public package interfaces | Original source workbooks and private market/weather inputs |
 | Production workflow, readiness checks, inference, calibration, and reporting | Production weather snapshots and private ledgers |
 | Public market/weather adapters and provenance interfaces | Production checkpoints or model weights |
+| Four sanitized research workbooks in `data/public/` | Additional workbooks, raw fields, and provider-only data |
 | Bundle manifest and checksum validation | API keys, cookies, certificates, or local configuration |
 | Synthetic-data helpers and contract tests | Local runs, logs, reports, and generated output |
 | CLI entry points and CI boundary checks | Material whose redistribution rights are not confirmed |
@@ -187,6 +190,41 @@ uv run python scripts/generate_demo_data.py --days 90 --seed 7
 The generated files are ignored by Git. They exercise software interfaces only;
 they are not a market dataset, a production model, or evidence of live-market
 performance.
+
+## Public research data package
+
+The repository includes four derived workbooks in `data/public/`: three
+market-period files covering 2024, 2025, and workbook rows from 2026-01-01
+through 2026-08-15,
+plus a manual real-time price file covering 2026-08-13 through 2026-08-22. They
+retain only the fields needed by the public Shandong adapters. The source
+workbook's `实际披露数据` sheet, original author metadata, and non-required
+fields are excluded. These are research inputs, not an official data feed or
+a production-ready dataset; the exact hashes and structure are recorded in
+[`data/public/MANIFEST.json`](data/public/MANIFEST.json).
+
+Validate the package without writing runtime state:
+
+```powershell
+uv run python scripts/ingest_public_shandong_workbooks.py `
+  --input-dir data/public `
+  --check-only
+```
+
+Ingest it into an ignored local runtime for parser and historical research
+work:
+
+```powershell
+uv run python scripts/ingest_public_shandong_workbooks.py `
+  --input-dir data/public `
+  --runtime-root .private-runtime
+```
+
+The importer writes canonical parquet files only below
+`.private-runtime/data/raw/shandong_all_network/SD/`. It does not acquire
+weather, create a model bundle, or run a forecast. See
+[`docs/PUBLIC_DATA.md`](docs/PUBLIC_DATA.md) for fields, units, transformation
+rules, known blank price days, and redistribution limitations.
 
 ## Prepare a private runtime
 
@@ -317,6 +355,7 @@ credentials, calibration ledgers, checkpoints, or generated reports. The
 | --- | --- |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Runtime flow, source layout, and contract invariants |
 | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | Installation, synthetic data, bundle, and result-inspection commands |
+| [`docs/PUBLIC_DATA.md`](docs/PUBLIC_DATA.md) | Public workbook fields, sanitization, import, and data-use boundary |
 | [`docs/FEATURE_ABLATION.md`](docs/FEATURE_ABLATION.md) | Offline weather, calendar, and price-state dependency audit |
 | [`docs/MODEL_RELEASE.md`](docs/MODEL_RELEASE.md) | Evidence required before distributing model weights |
 | [`docs/PROVENANCE.md`](docs/PROVENANCE.md) | Code, data, dependency, and redistribution provenance |
