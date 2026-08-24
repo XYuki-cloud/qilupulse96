@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install locked dependencies
+        run: uv sync --locked --dev
+      - name: Run tests
+        run: uv run pytest -q
+      - name: Compile source
+        run: uv run python -m compileall -q src scripts
+      - name: Check import
+        run: uv run python -c "import da_forecast; print(da_forecast.__version__)"
+      - name: Build distributions
+        run: uv build
+      - name: Install and import wheel in a clean environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel="$(find dist -maxdepth 1 -type f -name '*.whl' -print -quit)"
+          test -n "$wheel"
+          uv venv .ci-wheel-env --python 3.12
+          uv pip install --python .ci-wheel-env/bin/python "$wheel"
+          .ci-wheel-env/bin/python -c "import da_forecast; import da_forecast.production; print(da_forecast.__version__)"
+      - name: Check whitespace
+        run: git diff --check
+
+  public-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject private path and artifact patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fxq '.private-runtime/' .gitignore
+          if git ls-files | grep -Eq '(^|/)\.private-runtime(/|$)'; then
+            echo 'Git tracks private runtime state.' >&2
+            exit 1
+          fi
+          if git grep -n -I -E 'AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|-----BEGIN (RSA|EC|OPENSSH|PRIVATE) KEY-----' -- . ':!.github/workflows/ci.yml'; then
+            echo 'Public boundary guard found a high-confidence secret marker.' >&2
+            exit 1
+          fi
+          if git grep -n -I -E '(^|[^[:alnum:]])[A-Z]:[\\/]|\\\\[^[:space:]/]+[\\/]|\.pt$|\.ckpt$' -- . ':!uv.lock' ':!.github/workflows/ci.yml' ':!.gitignore' ':!tests/test_public_release_guard.py'; then
+            echo 'Public boundary guard found a forbidden path, old project marker, data provider marker, or model artifact.' >&2
+            exit 1
+          fi
+          if find . -type f \( -name '*.xlsx' -o -name '*.xls' -o -name '*.parquet' -o -name '*.pt' -o -name '*.ckpt' -o -name '*.npz' \) -not -path './.git/*' | grep -q .; then
+            echo 'Public tree contains a forbidden data or model file.' >&2
+            exit 1
+          fi

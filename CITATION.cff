@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: QiluPulse-96
+message: If you use this software, please cite the repository and the exact release you used.
+authors:
+  - family-names: XYuki
+    given-names: ""
+version: 0.1.0
+date-released: 2026-08-22
+license: Apache-2.0
+abstract: Auditable realtime electricity-price forecasting for the Shandong market.

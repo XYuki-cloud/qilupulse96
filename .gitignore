@@ -1,0 +1,65 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*secret*
+*token*
+
+# Python environments and caches
+.venv/
+.venv-*/
+.uv-cache*/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.tmp-*/
+*pytest*-tmp/
+
+# Build products
+build/
+dist/
+*.whl
+
+# Private or generated project data
+.private-runtime/
+data/raw/
+data/bootstrap/
+data/calibration/
+data/processed/
+data/reference/calendar/*.json
+artifacts/
+runs/
+logs/
+output/
+
+# Model checkpoints and binary artifacts
+*.parquet
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.npz
+*.safetensors
+
+# User-provided market files and generated documents
+*.xlsx
+*.xls
+*.xlsm
+*.pdf
+
+# Local editor and OS files
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini
