@@ -1,0 +1,189 @@
+{
+  "schema_version": "public-research-data-v1",
+  "purpose": "Authorized real-data research inputs for QiluPulse-96; not a production service or benchmark.",
+  "generated_at_utc": "2026-08-24T14:56:07.391Z",
+  "source_files_are_private": true,
+  "original_workbooks_are_not_modified": true,
+  "excluded_source_sheet": "实际披露数据",
+  "known_warnings": [
+    "The manual workbook contains a duplicate normalized 2026-08-21 00:00 slot; the public parser keeps the first row and records a warning."
+  ],
+  "files": [
+    {
+      "file": "shandong_market_2024_public.xlsx",
+      "coverage": {
+        "start": "2024-01-01",
+        "end": "2024-12-31"
+      },
+      "sheets": [
+        {
+          "name": "实时出清数据",
+          "rows": 35137,
+          "columns": 3,
+          "fields": [
+            "目标日期",
+            "时刻",
+            "实时出清电价"
+          ]
+        },
+        {
+          "name": "日前出清数据",
+          "rows": 35137,
+          "columns": 3,
+          "fields": [
+            "目标日期",
+            "时刻",
+            "日前出清电价"
+          ]
+        },
+        {
+          "name": "日前披露数据",
+          "rows": 35137,
+          "columns": 12,
+          "fields": [
+            "当前日期",
+            "目标日期",
+            "时刻",
+            "相隔天数",
+            "负荷信息预测",
+            "日前风电总加（MW）",
+            "日前光伏总加（MW）",
+            "联络线信息预测",
+            "竞价空间预测(MW)",
+            "负荷率预测",
+            "日前地方电厂发电总加（MW）",
+            "日前自备机组总加（MW）"
+          ]
+        }
+      ],
+      "bytes": 32005267,
+      "sha256": "922D7C8545B83620B5F452AFAF6E6E6869559A9C4A04C97D5387A214C2C8BC83"
+    },
+    {
+      "file": "shandong_market_2025_public.xlsx",
+      "coverage": {
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "sheets": [
+        {
+          "name": "实时出清数据",
+          "rows": 35041,
+          "columns": 3,
+          "fields": [
+            "目标日期",
+            "时刻",
+            "实时出清电价"
+          ]
+        },
+        {
+          "name": "日前出清数据",
+          "rows": 35041,
+          "columns": 3,
+          "fields": [
+            "目标日期",
+            "时刻",
+            "日前出清电价"
+          ]
+        },
+        {
+          "name": "日前披露数据",
+          "rows": 35041,
+          "columns": 12,
+          "fields": [
+            "当前日期",
+            "目标日期",
+            "时刻",
+            "相隔天数",
+            "负荷信息预测",
+            "日前风电总加（MW）",
+            "日前光伏总加（MW）",
+            "联络线信息预测",
+            "竞价空间预测(MW)",
+            "负荷率预测",
+            "日前地方电厂发电总加（MW）",
+            "日前自备机组总加（MW）"
+          ]
+        }
+      ],
+      "bytes": 31984011,
+      "sha256": "12D7F29C3C445526B5AE641B28D82115609D763936ED44A3FF241152A5267EBF"
+    },
+    {
+      "file": "shandong_market_2026-01-01_2026-08-15_public.xlsx",
+      "coverage": {
+        "start": "2026-01-01",
+        "end": "2026-08-15"
+      },
+      "sheets": [
+        {
+          "name": "实时出清数据",
+          "rows": 21793,
+          "columns": 3,
+          "fields": [
+            "目标日期",
+            "时刻",
+            "实时出清电价"
+          ]
+        },
+        {
+          "name": "日前出清数据",
+          "rows": 21793,
+          "columns": 3,
+          "fields": [
+            "目标日期",
+            "时刻",
+            "日前出清电价"
+          ]
+        },
+        {
+          "name": "日前披露数据",
+          "rows": 21793,
+          "columns": 12,
+          "fields": [
+            "当前日期",
+            "目标日期",
+            "时刻",
+            "相隔天数",
+            "负荷信息预测",
+            "日前风电总加（MW）",
+            "日前光伏总加（MW）",
+            "联络线信息预测",
+            "竞价空间预测(MW)",
+            "负荷率预测",
+            "日前地方电厂发电总加（MW）",
+            "日前自备机组总加（MW）"
+          ]
+        }
+      ],
+      "bytes": 19874617,
+      "sha256": "5FF8A5F01B64695165E98777C19BC438E22609A1636D7C41E13E3DDEAA8660EA"
+    },
+    {
+      "file": "manual_realtime_prices_2026-08-13_2026-08-22_public.xlsx",
+      "coverage": {
+        "start": "2026-08-13",
+        "end": "2026-08-22"
+      },
+      "sheets": [
+        {
+          "name": "Sheet1",
+          "rows": 961,
+          "columns": 3,
+          "fields": [
+            "日期",
+            "时间",
+            "实时电价"
+          ]
+        }
+      ],
+      "bytes": 160152,
+      "sha256": "6368C1104FD42ED856A7FCF28CF863D7FB0897DA3C1F9EB1CCB996B65C81A822"
+    }
+  ],
+  "restrictions": [
+    "The public copies are derived minimal-field workbooks, not the original source workbooks.",
+    "The data is separate from the Apache-2.0 code license.",
+    "The data is for research and reproducibility only; no production, trading, or revenue claim is made."
+  ]
+}
